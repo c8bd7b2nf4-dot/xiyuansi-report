@@ -308,12 +308,23 @@
 </div>
 <script>
 (function(){
-  /* ---------- accordion: click a title to reveal the full note ---------- */
-  document.querySelectorAll('.ttl').forEach(function(btn){
+  /* ---------- accordion: click a title to reveal the full note ----------
+     Only ONE note stays open at a time — opening another collapses the previous. */
+  var ttls = Array.prototype.slice.call(document.querySelectorAll('.ttl'));
+  function closeAll(except){
+    ttls.forEach(function(b){
+      if(b === except) return;
+      var row = document.getElementById(b.getAttribute('data-row'));
+      if(row) row.classList.remove('on');
+      b.classList.remove('open');
+    });
+  }
+  ttls.forEach(function(btn){
     btn.addEventListener('click', function(){
       var row = document.getElementById(btn.getAttribute('data-row'));
       if(!row) return;
       var opening = !row.classList.contains('on');
+      closeAll(btn);                 // collapse every other note first
       row.classList.toggle('on', opening);
       btn.classList.toggle('open', opening);
     });
